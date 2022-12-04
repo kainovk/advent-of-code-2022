@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"sort"
 	"strconv"
 )
 
@@ -13,8 +14,11 @@ func main() {
 	defer file.Close()
 	scanner := bufio.NewScanner(file)
 
-	var max int
-	var currentCalories int
+	var (
+		max             int
+		currentCalories int
+		snacks          []int
+	)
 	for scanner.Scan() {
 		line := scanner.Text()
 		calories, err := strconv.Atoi(line)
@@ -24,8 +28,19 @@ func main() {
 			if max < currentCalories {
 				max = currentCalories
 			}
+			snacks = append(snacks, currentCalories)
 			currentCalories = 0
 		}
 	}
-	fmt.Println(max)
+	sort.Ints(snacks)
+	topThree := snacks[len(snacks)-3:]
+	fmt.Println(sum(topThree))
+}
+
+func sum(ints []int) int {
+	result := 0
+	for _, v := range ints {
+		result += v
+	}
+	return result
 }
