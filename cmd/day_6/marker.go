@@ -12,7 +12,7 @@ func main() {
 	sc := bufio.NewScanner(file)
 	sc.Split(bufio.ScanRunes)
 
-	const seq = 4
+	const seq = 14
 	var queue []rune
 	for i := 0; i < seq-1; i++ {
 		sc.Scan()
