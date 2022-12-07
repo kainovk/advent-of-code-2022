@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+	"sort"
 	"strconv"
 	"strings"
 )
@@ -48,6 +49,29 @@ func main() {
 	fmt.Println("Total size: ", root.fsize+root.dsize)
 	result1 := partOne(root)
 	fmt.Println(result1)
+
+	const space = 70000000
+	const need = 30000000
+	taken := root.fsize + root.dsize
+	size := getDirectoryToDeleteSize(taken, space-need, root)
+	fmt.Println(size)
+}
+
+func getDirectoryToDeleteSize(space, bound int, root directory) int {
+	var candidates []int
+	search(space, bound, root, &candidates)
+	sort.Ints(candidates)
+	return candidates[0]
+}
+
+func search(space, bound int, root directory, c *[]int) {
+	size := root.fsize + root.dsize
+	if space-size <= bound {
+		*c = append(*c, size)
+	}
+	for _, dir := range root.subdirs {
+		search(space, bound, *dir, c)
+	}
 }
 
 func partOne(root directory) int {
