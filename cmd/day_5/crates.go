@@ -50,7 +50,7 @@ func move(from, to []rune, times int) ([]rune, []rune) {
 	fl := len(from)
 	crates := from[fl-times:]
 	from = from[:fl-times]
-	for i := times - 1; i >= 0; i-- {
+	for i := 0; i < times; i++ {
 		to = append(to, crates[i])
 	}
 	return from, to
