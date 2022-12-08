@@ -19,14 +19,75 @@ func main() {
 		grove = append(grove, trees)
 	}
 	visible := countVisible(grove)
+	score := getBestScenicScore(grove)
 	fmt.Println(visible)
+	fmt.Println(score)
+}
+
+func getBestScenicScore(g [][]int) int {
+	row := len(g)
+	col := len(g[0])
+	bestScore := 0
+	for i := 1; i < row-1; i++ {
+		for j := 1; j < col-1; j++ {
+			score := getScore(g, i, j)
+			sScore := countScenicScore(score)
+			if bestScore < sScore {
+				bestScore = sScore
+			}
+		}
+	}
+	return bestScore
+}
+
+func getScore(g [][]int, i, j int) []int {
+	score := make([]int, 4)
+	row := len(g)
+	col := len(g[0])
+	var cur int
+	for top := i - 1; top >= 0; top-- {
+		score[0]++
+		cur = g[top][j]
+		if cur >= g[i][j] {
+			break
+		}
+	}
+	for btm := i + 1; btm < row; btm++ {
+		score[1]++
+		cur = g[btm][j]
+		if cur >= g[i][j] {
+			break
+		}
+	}
+	for left := j - 1; left >= 0; left-- {
+		score[2]++
+		cur = g[i][left]
+		if cur >= g[i][j] {
+			break
+		}
+	}
+	for right := j + 1; right < col; right++ {
+		score[3]++
+		cur = g[i][right]
+		if cur >= g[i][j] {
+			break
+		}
+	}
+	return score
+}
+
+func countScenicScore(ss []int) int {
+	result := 1
+	for _, s := range ss {
+		result *= s
+	}
+	return result
 }
 
 func countVisible(g [][]int) int {
 	row := len(g)
 	col := len(g[0])
 	c := row*col - (row-2)*(col-2)
-
 	for i := 1; i < row-1; i++ {
 		for j := 1; j < col-1; j++ {
 			if visible(g, i, j) {
@@ -41,7 +102,7 @@ func visible(g [][]int, i, j int) bool {
 	row := len(g)
 	col := len(g[0])
 	var t, b, l, r bool
-	for top := 0; top < i; top++ {
+	for top := i - 1; top >= 0; top-- {
 		if g[top][j] >= g[i][j] {
 			t = true
 		}
@@ -51,7 +112,7 @@ func visible(g [][]int, i, j int) bool {
 			b = true
 		}
 	}
-	for left := 0; left < j; left++ {
+	for left := j - 1; left >= 0; left-- {
 		if g[i][left] >= g[i][j] {
 			l = true
 		}
