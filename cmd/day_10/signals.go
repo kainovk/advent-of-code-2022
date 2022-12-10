@@ -27,15 +27,15 @@ func main() {
 		if len(split) == 2 {
 			addx, _ = strconv.Atoi(split[1])
 			queue = append(queue, addx)
-			for i := 0; i < 2; i++ {
-				pSum += getPower(x, cycleCount)
-				queue, x = cycle(queue, x)
-				cycleCount++
-			}
-		} else {
+		}
+		for i := 0; i < len(split); i++ {
 			pSum += getPower(x, cycleCount)
 			queue, x = cycle(queue, x)
 			cycleCount++
+			printPixel(x, cycleCount%40)
+			if cycleCount%40 == 0 {
+				fmt.Println()
+			}
 		}
 		queue = append(queue, 0)
 	}
@@ -44,7 +44,6 @@ func main() {
 
 func getPower(x, count int) int {
 	if count%40 == 20 {
-		fmt.Println("powerful signal at x:", x, "count:", count)
 		return x * count
 	}
 	return 0
@@ -54,4 +53,12 @@ func cycle(signals []int, x int) ([]int, int) {
 	x += signals[0]
 	signals = signals[1:]
 	return signals, x
+}
+
+func printPixel(x, c int) {
+	if c >= x && x >= c-2 {
+		fmt.Print("#")
+	} else {
+		fmt.Print(".")
+	}
 }
