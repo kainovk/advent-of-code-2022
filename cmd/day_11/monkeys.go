@@ -27,7 +27,7 @@ func (m monkey) play(item int) int {
 	} else {
 		item *= operand
 	}
-	return item / 3
+	return item
 }
 
 func main() {
@@ -36,7 +36,7 @@ func main() {
 	sc := bufio.NewScanner(file)
 
 	monkeys := make([]monkey, 0)
-	const rounds = 20
+	const rounds = 10_000
 
 	for sc.Scan() {
 		sc.Scan()
@@ -77,11 +77,14 @@ func main() {
 		)
 	}
 
+	lcm := computeLCM(monkeys)
+	fmt.Println("lcm:", lcm)
+
 	throwsCount := make([]int, len(monkeys))
 	for i := 0; i < rounds; i++ {
 		for i, monkey := range monkeys {
 			for _, item := range *monkey.items {
-				item = monkey.play(item)
+				item = monkey.play(item) % lcm
 				targetMonkey := 0
 				if item%monkey.divTest == 0 {
 					targetMonkey = monkey.throw[0]
@@ -98,6 +101,25 @@ func main() {
 	sort.Ints(throwsCount)
 	fmt.Println("Monkey business:",
 		throwsCount[len(throwsCount)-1]*throwsCount[len(throwsCount)-2])
+}
+
+func computeLCM(monkeys []monkey) int {
+	lcm := 1
+	for i := 0; i < len(monkeys); i++ {
+		lcm = LCM(lcm, monkeys[i].divTest)
+	}
+	return lcm
+}
+
+func LCM(a, b int) int {
+	return a * b / GCDRemainderRecursive(a, b)
+}
+
+func GCDRemainderRecursive(a, b int) int {
+	if b == 0 {
+		return a
+	}
+	return GCDRemainderRecursive(b, a%b)
 }
 
 func mapOperand(o string) int {
